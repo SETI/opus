@@ -1518,8 +1518,8 @@ Example:
     "label": "Wavelength Constraints"
   },
   {
-    "table_name": "obs_occultation",
-    "label": "Occultation Constraints"
+    "table_name": "obs_profile",
+    "label": "Ring/Limb Profile Constraints"
   },
   {
     "table_name": "obs_surface_geometry__methone",
@@ -1582,8 +1582,8 @@ Example:
     "label": "Wavelength Constraints"
   },
   {
-    "table_name": "obs_occultation",
-    "label": "Occultation Constraints"
+    "table_name": "obs_profile",
+    "label": "Ring/Limb Profile Constraints"
   },
   {
     "table_name": "obs_surface_geometry__daphnis",
