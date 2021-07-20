@@ -267,6 +267,8 @@ def api_get_widget(request, **kwargs):
     auto_id = True
     selections = {}
     extras = {}
+    customized_input = slug in settings.MULT_WIDGETS_WITH_TOOLTIPS
+    options = []
 
     if request and request.GET is not None:
         (selections, extras) = url_to_search_params(request.GET,
@@ -392,6 +394,13 @@ def api_get_widget(request, **kwargs):
         mult_param = get_mult_name(param_qualified_name)
         model = apps.get_model('search',mult_param.title().replace('_',''))
 
+
+        if customized_input:
+            count = 0
+            for mult in model.objects.filter(display='Y').order_by('disp_order'):
+                options.append((count, mult.label, mult.tooltips))
+                count += 1
+
         if values is not None:
             # Make form choices case-insensitive
             choices = [mult.label for mult in model.objects.filter(display='Y')]
@@ -473,6 +482,12 @@ def api_get_widget(request, **kwargs):
                                                   form_type_unit_id, unit))
             item['valid_units_info'] = zip(new_unit, new_val1, new_val2)
 
+    # Get the current selections for customized widget inputs, need to pass into
+    # template and check the selected checkboxes.
+    try:
+        current_selections = form_vals[slug]
+    except KeyError:
+        current_selections = []
     # If we don't want to display this group of units on the search tab, then
     # don't pass it to the template
     if not display_search_unit(form_type_unit_id):
@@ -488,7 +503,10 @@ def api_get_widget(request, **kwargs):
         "range_form_types": settings.RANGE_FORM_TYPES,
         "mult_form_types": settings.MULT_FORM_TYPES,
         "units": units,
-        "ranges": ranges
+        "ranges": ranges,
+        "customized_input": customized_input,
+        "options": options,
+        "selections": current_selections,
     }
     ret = render(request, template, context)
 
